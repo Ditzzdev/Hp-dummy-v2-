@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HP Dummy Full Fix Apps + Music + Portfolio</title>
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+}
+.hp {
+  width: 180px;
+  height: 360px;
+  background: black;
+  border-radius: 25px;
+  padding: 4px;
+  box-sizing: border-box;
+  position: relative;
+}
+.screen {
+  width: 100%;
+  height: 100%;
+  background: url("wallpaper.jpg") center/cover no-repeat;
+  border-radius: 21px;
+  position: relative;
+  overflow: hidden;
+}
+.apps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: absolute;
+  top: 55px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+.row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+.app {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.blue { background: blue; }
+.red { background: red; }
+.green { background: green; }
+.pink { background: pink; }
+.purple { background: purple; }
+
+.camera {
+  width: 10px;
+  height: 10px;
+  background: black;
+  border-radius: 50%;
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.app-window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  border-radius: 21px;
+  display: flex;
+  flex-direction: column;
+  color: white;
+  z-index: 5;
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+}
+.app-window.active {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Kalkulator */
+.calc-display {
+  background: #222;
+  padding: 10px;
+  font-size: 22px;
+  text-align: right;
+  border-radius: 12px;
+  margin: 12px;
+  height: 40px;
+  overflow: hidden;
+}
+.calc-buttons {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 12px;
+}
+.btn {
+  background: #333;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn:active { background: #555; }
+.btn.orange { background: orange; }
+.btn.gray { background: #777; }
+
+/* YouTube */
+.video-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+}
+.video-list button {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #333;
+  color: white;
+  width: 80%;
+  text-align: center;
+}
+.video-list button:hover { background: #555; }
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: none;
+  z-index: 5;
+}
+
+/* Galeri */
+.gallery-preview {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  flex: 1;
+  overflow-y: auto;
+}
+.gallery-preview .preview {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.gallery-preview .preview:hover { transform: scale(1.1); }
+.gallery-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: none;
+  z-index: 5;
+}
+
+/* Music App */
+.music-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  overflow-y: auto;
+  justify-content: center;
+  align-items: center;
+}
+.music-list button {
+  width: 80%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #333;
+  color: white;
+}
+.music-list button:hover { background: #555; }
+
+.music-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+}
+.music-controls button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #333;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+.music-controls button:hover { background: #555; }
+
+/* Portfolio App */
+.portfolio-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  background: linear-gradient(135deg, #4b0082, #800080);
+  color: white;
+  font-size: 12px;
+  animation: fadeIn 0.5s ease;
+}
+.portfolio-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  animation: slideDown 0.6s ease;
+}
+.section {
+  margin-bottom: 10px;
+  padding: 6px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  animation: slideUp 0.6s ease;
+}
+.section h3 {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+}
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #fff;
+  animation: fillBar 2s forwards;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {opacity:0;} to {opacity:1;}
+}
+@keyframes slideDown {
+  from {transform:translateY(-20px);opacity:0;} to {transform:translateY(0);opacity:1;}
+}
+@keyframes slideUp {
+  from {transform:translateY(20px);opacity:0;} to {transform:translateY(0);opacity:1;}
+}
+@keyframes fillBar {
+  from {width:0;} to {width:80%;}
+}
+
+/* Navigasi */
+.nav-line {
+  width: 60px;
+  height: 4px;
+  background: black;
+  border-radius: 2px;
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.6;
+  cursor: pointer;
+  z-index: 11;
+}
+</style>
+</head>
+<body>
+<div class="hp">
+  <div class="screen">
+    <div class="apps">
+      <div class="row">
+        <div class="app blue" id="openCalc"></div>
+        <div class="app red" id="openYT"></div>
+        <div class="app green" id="openGallery"></div>
+      </div>
+      <div class="row">
+        <div class="app pink" id="openMusic"></div>
+        <div class="app purple" id="openPortfolio"></div>
+      </div>
+    </div>
+
+    <!-- Kalkulator -->
+    <div class="app-window" id="calcApp">
+      <div class="calc-display" id="calcDisplay">0</div>
+      <div class="calc-buttons">
+        <button class="btn gray" onclick="clearDisplay()">C</button>
+        <button class="btn gray" onclick="inputValue('(')">(</button>
+        <button class="btn gray" onclick="inputValue(')')">)</button>
+        <button class="btn orange" onclick="inputValue('/')">÷</button>
+        <button class="btn" onclick="inputValue('7')">7</button>
+        <button class="btn" onclick="inputValue('8')">8</button>
+        <button class="btn" onclick="inputValue('9')">9</button>
+        <button class="btn orange" onclick="inputValue('*')">×</button>
+        <button class="btn" onclick="inputValue('4')">4</button>
+        <button class="btn" onclick="inputValue('5')">5</button>
+        <button class="btn" onclick="inputValue('6')">6</button>
+        <button class="btn orange" onclick="inputValue('-')">−</button>
+        <button class="btn" onclick="inputValue('1')">1</button>
+        <button class="btn" onclick="inputValue('2')">2</button>
+        <button class="btn" onclick="inputValue('3')">3</button>
+        <button class="btn orange" onclick="inputValue('+')">+</button>
+        <button class="btn" onclick="inputValue('0')" style="grid-column: span 2;">0</button>
+        <button class="btn" onclick="inputValue('.')">.</button>
+        <button class="btn orange" onclick="calculateResult()">=</button>
+      </div>
+    </div>
+
+    <!-- YouTube mini -->
+    <div class="app-window" id="ytApp">
+      <div class="video-list" id="videoList">
+        <button onclick="playVideo('video1.mp4')">Video 1</button>
+        <button onclick="playVideo('video2.mp4')">Video 2</button>
+        <button onclick="playVideo('video3.mp4')">Video 3</button>
+      </div>
+      <video id="ytVideo" controls></video>
+    </div>
+
+    <!-- Galeri -->
+    <div class="app-window" id="galleryApp">
+      <div class="gallery-preview" id="galleryPreview">
+        <img src="foto1.jpg" class="preview" onclick="showPhoto('foto1.jpg')">
+        <img src="foto2.jpg" class="preview" onclick="showPhoto('foto2.jpg')">
+        <img src="foto3.jpg" class="preview" onclick="showPhoto('foto3.jpg')">
+        <img src="foto4.jpg" class="preview" onclick="showPhoto('foto4.jpg')">
+        <img src="foto5.jpg" class="preview" onclick="showPhoto('foto5.jpg')">
+      </div>
+      <img id="galleryPhoto" class="gallery-photo" />
+    </div>
+
+    <!-- Music App -->
+    <div class="app-window" id="musicApp">
+      <div class="music-list">
+        <button onclick="playSong(0)">Lagu 1</button>
+        <button onclick="playSong(1)">Lagu 2</button>
+        <button onclick="playSong(2)">Lagu 3</button>
+      </div>
+      <div class="music-controls">
+        <button onclick="prevSong()">⏮</button>
+        <button onclick="togglePlay()">⏯</button>
+        <button onclick="nextSong()">⏭</button>
+      </div>
+      <audio id="audioPlayer"></audio>
+    </div>
+
+    <!-- Portfolio App -->
+    <div class="app-window" id="portfolioApp">
+      <div class="portfolio-container">
+        <div class="portfolio-title">Ditzz Dev</div>
+        <div class="section">
+          <h3>About Me</h3>
+          <p>Seorang developer muda yang suka bikin project unik & kreatif.</p>
+        </div>
+        <div class="section">
+          <h3>Skills</h3>
+          <p>HTML, CSS, JavaScript</p>
+          <div class="progress-bar"><div class="progress-fill"></div></div>
+        </div>
+        <div class="section">
+          <h3>Projects</h3>
+          <p>- HP Dummy Project</p>
+          <p>- Flappy Bird Custom</p>
+          <p>- Ditzz Mobile</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="camera"></div>
+    <div class="nav-line" id="navLine"></div>
+  </div>
+</div>
+
+<script>
+  const calcApp = document.getElementById("calcApp");
+  const openCalc = document.getElementById("openCalc");
+  const calcDisplay = document.getElementById("calcDisplay");
+  let displayValue = "";
+
+  const ytApp = document.getElementById("ytApp");
+  const openYT = document.getElementById("openYT");
+  const videoList = document.getElementById("videoList");
+  const ytVideo = document.getElementById("ytVideo");
+
+  const galleryApp = document.getElementById("galleryApp");
+  const openGallery = document.getElementById("openGallery");
+  const galleryPreview = document.getElementById("galleryPreview");
+  const galleryPhoto = document.getElementById("galleryPhoto");
+
+  const musicApp = document.getElementById("musicApp");
+  const openMusic = document.getElementById("openMusic");
+  const audioPlayer = document.getElementById("audioPlayer");
+  let currentSong = 0;
+  const songs = ["lagu1.mp3","lagu2.mp3","lagu3.mp3"];
+
+  const portfolioApp = document.getElementById("portfolioApp");
+  const openPortfolio = document.getElementById("openPortfolio");
+
+  const navLine = document.getElementById("navLine");
+
+  // Open apps
+  openCalc.onclick = () => { calcApp.classList.add("active"); };
+  openYT.onclick = () => {
+    ytApp.classList.add("active");
+    videoList.style.display="flex";
+    ytVideo.style.display="none";
+    ytVideo.pause();
+    ytVideo.currentTime=0;
+  };
+  openGallery.onclick = () => {
+    galleryApp.classList.add("active");
+    galleryPreview.style.display="flex";
+    galleryPhoto.style.display="none";
+  };
+  openMusic.onclick = () => { musicApp.classList.add("active"); };
+  openPortfolio.onclick = () => { portfolioApp.classList.add("active"); };
+
+  // Close apps
+  navLine.onclick = () => {
+    calcApp.classList.remove("active"); displayValue=""; calcDisplay.textContent="0";
+    ytApp.classList.remove("active"); ytVideo.pause(); ytVideo.currentTime=0;
+    galleryApp.classList.remove("active"); galleryPhoto.src="";
+    musicApp.classList.remove("active"); audioPlayer.pause();
+    portfolioApp.classList.remove("active");
+  };
+
+  // Kalkulator
+  function inputValue(val){ 
+    if(displayValue==="0" && val!=="." ) displayValue=""; 
+    displayValue+=val; 
+    calcDisplay.textContent=displayValue; 
+  }
+  function clearDisplay(){ displayValue=""; calcDisplay.textContent="0"; }
+  function calculateResult(){ 
+    try{ displayValue=eval(displayValue).toString(); calcDisplay.textContent=displayValue;}
+    catch{calcDisplay.textContent="Error";}
+  }
+
+  // YouTube
+  function playVideo(src) {
+    videoList.style.display="none";
+    ytVideo.src=src;
+    ytVideo.style.display="block";
+    ytVideo.play();
+  }
+
+  // Gallery
+  function showPhoto(src){
+    galleryPreview.style.display="none";
+    galleryPhoto.src = src;
+    galleryPhoto.style.display="block";
+  }
+
+  // Music
+  function playSong(index){
+    currentSong = index;
+    audioPlayer.src = songs[currentSong];
+    audioPlayer.play();
+  }
+  function togglePlay(){
+    if(audioPlayer.paused) audioPlayer.play();
+    else audioPlayer.pause();
+  }
+  function nextSong(){
+    currentSong = (currentSong+1)%songs.length;
+    playSong(currentSong);
+  }
+  function prevSong(){
+    currentSong = (currentSong-1+songs.length)%songs.length;
+    playSong(currentSong);
+  }
+</script>
+</body>
+</html>
